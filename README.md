@@ -21,3 +21,25 @@
 На проверку направить файл crontab и скриншот с результатом работы утилиты.
 
 https://github.com/Kolins890/backup/blob/main/crontab_backup.txt
+Скрипт `backup_home.sh` выполняет ежедневное зеркальное копирование домашней директории.
+
+```bash
+#!/bin/bash
+
+SOURCE_DIR="/home/kolins/"
+BACKUP_DIR="/tmp/backup"
+LOG_FILE="/var/log/backup.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+log_message() {
+    echo "[$TIMESTAMP] $1" >> "$LOG_FILE"
+}
+
+log_message "Backup started"
+rsync --archive --delete "$SOURCE_DIR" "$BACKUP_DIR"
+
+if [ $? -eq 0 ]; then
+    log_message "Backup completed successfully"
+else
+    log_message "Backup failed with error code $?"
+fi
